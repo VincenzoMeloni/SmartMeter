@@ -20,7 +20,7 @@ class Comunicatore:
 
         print(f"Inviando dato al Backend: {dato}")
         try:
-            r = requests.post(self.backend_url, json=dato, timeout=5)
+            r = requests.post(f"{self.backend_url}/sensor/heartbeat", json=dato, timeout=5)
             if r.status_code == requests.codes.ok:
                 print(f"Status: {r.status_code} , salvo l'indice")
                 self.sensore.index+=1
