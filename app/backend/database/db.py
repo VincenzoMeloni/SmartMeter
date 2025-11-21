@@ -2,6 +2,7 @@ from sqlmodel import SQLModel, Session, create_engine, select
 import os
 from dotenv import load_dotenv
 from app.backend.models.sensore_db import SensorData
+from datetime import datetime, timedelta
 
 load_dotenv(dotenv_path=r"C:\INFORMATICA\Magistrale\1-ANNO\OSM-[IOT]\Progetto_IOT_residential\.env")
 
@@ -53,3 +54,36 @@ def getUltimo():
             return res
     except Exception as e:
         raise RuntimeError(f"[ERRORE DB] Recupero ultimo dato fallito: {e}")
+
+def getUltimi(n: int):
+    try:
+        with Session(engine) as session:
+            return session.exec(select(SensorData).order_by(SensorData.timestamp.desc()).limit(n)).all()
+    except Exception as e:
+        raise RuntimeError(f"[ERRORE DB] Recupero ultimi {n} dati fallito: {e}")
+
+def checkBlackout():
+    ultimi = getUltimi(3)
+
+    if not ultimi:
+        return True
+
+    now = datetime.now()
+
+    if now - ultimi[0].timestamp > timedelta(seconds=120):
+        return True
+    
+    if len(ultimi) == 3 and all(d.potenza < 0.001 for d in ultimi):
+        return True
+
+    return False
+
+def checkSuperamento():
+    ultimo = getUltimo()
+    return ultimo is not None and ultimo.potenza >= 3
+
+def check():
+    return{
+        "blackout": checkBlackout(),
+        "superamento": checkSuperamento()
+    }
