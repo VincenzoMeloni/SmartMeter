@@ -4,10 +4,13 @@ from threading import Thread
 from app.backend.database.db import check
 
 def job_check():
-    print("[CHECK] ", check())
+    try:
+        print("[CHECK]", check())
+    except Exception as e:
+        print("[CHECK ERROR]", e)
 
-def run():
-    schedule.every(10).seconds.do(job_check)
+def run(seconds=10):
+    schedule.every(seconds).seconds.do(job_check)
 
     while True:
         schedule.run_pending()

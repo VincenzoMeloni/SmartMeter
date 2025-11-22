@@ -15,7 +15,7 @@ DB_NAME = os.getenv("DB_NAME")
 DATABASE_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 try:
-    engine = create_engine(DATABASE_URL, echo=True)
+    engine = create_engine(DATABASE_URL, echo=False)
 except Exception as e:
     raise RuntimeError(f"[ERRORE DB] Creazione engine fallita: {e}")
 
@@ -62,13 +62,13 @@ def getUltimi(n: int):
     except Exception as e:
         raise RuntimeError(f"[ERRORE DB] Recupero ultimi {n} dati fallito: {e}")
 
-def checkBlackout():
+def checkBlackout(time: datetime = None):
     ultimi = getUltimi(3)
 
     if not ultimi:
         return True
 
-    now = datetime.now()
+    now = time or datetime.now()
 
     if now - ultimi[0].timestamp > timedelta(seconds=120):
         return True
@@ -82,8 +82,8 @@ def checkSuperamento():
     ultimo = getUltimo()
     return ultimo is not None and ultimo.potenza >= 3
 
-def check():
+def check(time: datetime = None):
     return{
-        "blackout": checkBlackout(),
+        "blackout": checkBlackout(time),
         "superamento": checkSuperamento()
     }

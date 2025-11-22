@@ -4,6 +4,7 @@ from app.backend.middleware.logginMidd import Log
 from app.backend.routes import sensor_routes
 from app.backend.database.db import creaDB
 from scheduler import start
+from test.scheduler_test import start_test
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -14,7 +15,7 @@ async def lifespan(app: FastAPI):
         print(f"Errore DB: {str(e)}")
         raise SystemExit("Server Arrestato.")
 
-    start()
+    start_test()
     print("Scheduler avviato.")
 
     yield
