@@ -14,12 +14,12 @@ def next_fake_time():
 def job_check_test():
     try:
         fake_now = next_fake_time()
-        print(f"[FAKE CHECK] {fake_now} -> ",check(time=fake_now))
+        print(f"[CHECK] {fake_now} -> ",check(time=fake_now))
     except Exception as e:
         print("[TEST ERROR]", e)
 
 
-def run_test(seconds=2):
+def run_test(seconds=10):
     schedule.every(seconds).seconds.do(job_check_test)
     print("[TEST] Scheduler di test avviato...")
 
