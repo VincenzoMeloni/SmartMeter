@@ -19,7 +19,7 @@
         this.demo.width = this.w;
         this.demo.height = this.h;
 
-        this.ctx.strokeStyle = '#00ff00';
+        this.ctx.strokeStyle = '#a60f0f';
         this.ctx.lineWidth = 2.0;
         this.ctx.shadowColor = 'rgba(0,255,0,0.9)';
         this.ctx.shadowBlur = 15;

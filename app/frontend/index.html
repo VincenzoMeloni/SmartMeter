@@ -7,18 +7,42 @@
         <link rel="stylesheet" href="style.css">
         <script defer src="script.js"></script>
         <script defer src="heartbeat.js"></script>
+        <script defer src="contagiri.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     </head>
     <body>
-        <div id="powerToday">
+        <div class="above">
+            <div id="powerToday" class="card">
+                <p>Consumo Odierno:</p>
+                <span id="powerTodayValue">0</span> kWh
+            </div>
+
+            <button aria-placeholder="notifiche" class="icon-btn">
+                <i class="fa fa-bell fa-2x" style="color:brown;"></i>
+            </button>
+
+            <div id="livePower" class="card" style="position: relative; width: 150px; height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
+                <p>Consumo Live:</p>
+
+                <div style="position: relative; width: 140px; height: 110px; display: flex; align-items: center; justify-content: center;">
+                    <svg width="150" height="110" viewBox="0 0 150 110">
+                        <path d="M10,80 A65,65 0 0,1 140,80" stroke="#ddd" stroke-width="10" fill="none" />
+                        <path id="livePowerArc" d="M10,80 A65,65 0 0,1 140,80" stroke="brown" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="0 203"/>
+                    </svg>
+
+                    <div id="livePowerValueContainer" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                        font-size: 18px; font-weight: 600; text-align: center;">
+                        <span id="livePowerValue">0</span> kW
+                    </div>
+                </div>
+            </div>
+
+
+
+            <button aria-placeholder="storico" class="icon-btn" id="storico">
+               <i class="fa fa-rotate-left fa-2x" style="color:brown;"></i>
+            </button>
         </div>
-
-        <button aria-placeholder="notifiche"></button>
-
-        <div id="livePower">
-        </div>
-
-        <button aria-placeholder="storico"></button>
-
         <canvas id="demo"></canvas>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5/dat.gui.min.js"></script>
     </body>
