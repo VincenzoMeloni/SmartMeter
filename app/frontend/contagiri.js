@@ -9,8 +9,8 @@ function updateLivePower(kW) {
     const arcLength = 203;
     arc.setAttribute('stroke-dasharray', `${arcLength * percent} ${arcLength}`);
 }
-/*
+
 setInterval(() => {
     const randomKW = Math.random() * 3;
     updateLivePower(randomKW);
-}, 1000);*/
+}, 1000);

@@ -6,6 +6,16 @@ html, body {
   background-color: black;
 }
 
+body{
+  background-image:
+    linear-gradient(#444 1px, transparent 1px),
+    linear-gradient(90deg, #444 1px, transparent 1px),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 260' preserveAspectRatio='none'><line x1='0' y1='60' x2='1000' y2='60' stroke='%23ffffff55' stroke-width='2'/><text x='5' y='55' fill='%23dddddd' font-size='14' font-family='Roboto Condensed, Arial Narrow, sans-serif' letter-spacing='-1'>3 kW</text><line x1='0' y1='130' x2='1000' y2='130' stroke='%23ffffff55' stroke-width='2'/><text x='5' y='125' fill='%23dddddd' font-size='14' font-family='Roboto Condensed, Arial Narrow, sans-serif' letter-spacing='-1'>1.5 kW</text><line x1='0' y1='200' x2='1000' y2='200' stroke='%23ffffff55' stroke-width='2'/><text x='5' y='195' fill='%23dddddd' font-size='14' font-family='Roboto Condensed, Arial Narrow, sans-serif' letter-spacing='-1'>0 kW</text></svg>");
+  background-size: 10px 50px, 50px 50px, 100% 290px;
+  background-repeat: repeat, repeat, no-repeat;
+  background-position: 0 -10px, 0 0, left center;
+}
+
 .above {
   position: absolute;
   top: 10%;
@@ -19,17 +29,24 @@ html, body {
 }
 
 .card {
-  background: white;
+  background: aliceblue;
   color: black;
   padding: 15px 25px;
-  min-width: 160px;
+  width: 150px;
+  height: 140px;
   border-radius: 10px;
   text-align: center;
   font-size: 14px;
   font-weight: 600;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
   gap: 8px;
+}
+
+#livePower {
+  position: relative;
 }
 
 .icon-btn {
@@ -47,12 +64,31 @@ html, body {
   left: 400px;
 }
 
-#livePower p {
+#powerToday p,#livePower p {
     font-size: 18px;
     font-weight: 600;
     margin: 5px 0;
     Color: brown;
     font-weight: bold;
+}
+
+#powerToday span:first-child{
+  font-size: 30px;
+}
+
+#powerToday span:nth-child(2){
+  font-size: 20px;
+}
+
+#livePowerArc {
+  transition: stroke-dasharray 0.5s ease;
+}
+
+#odierno{
+  display: inline-flex; 
+  align-items: baseline; 
+  gap: 4px;
+  margin-top: 30px;
 }
 
 canvas {
@@ -72,6 +108,10 @@ canvas {
     max-width: 100%;
     min-width: 35px;
     overflow-x: hidden;
+  }
+
+  body{
+  background-size: 10px 50px, 50px 50px, 1500px 290px;
   }
 
   .above {

@@ -10,6 +10,7 @@
         this.px = 0;
         this.opx = 0;
         this.py = this.h / 2;
+        this.targetPy = this.py;
         this.opy = this.py;
 
         this.speed = 0.5;
@@ -28,6 +29,8 @@
           this.px += this.speed;
 
           this.ctx.clearRect(this.px, 0, this.scanBarWidth, this.h);
+
+          this.py += (this.targetPy - this.py) * 0.08;
 
           this.ctx.beginPath();
           this.ctx.moveTo(this.opx, this.opy);
@@ -51,20 +54,13 @@
     var ecg = new ECGPulse();
 
     setInterval(async () => {
-      try {
-        const res = await fetch("/ecg", { cache: "no-store" });
-        const data = await res.json();
+      const maxKw = 3;
+      const randomKW = Math.random() * maxKw;
 
-        const maxKw = 6;
+      let norm = randomKW / maxKw;
+      norm = Math.max(0, Math.min(1, norm));
 
-        let norm = data.value / maxKw;
-        norm = Math.max(0, Math.min(1, norm));
-
-        ecg.py = (ecg.h / 2) - (norm - 0.5) * 160;
-
-      } catch (err) {
-        console.error("Errore GET ECG:", err);
-      }
-    }, 120);
+      ecg.targetPy = (ecg.h / 2) - (norm - 0.5) * 160;
+    }, 1000);
 
 }());
