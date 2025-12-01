@@ -3,17 +3,12 @@ import schedule
 import time
 from threading import Thread
 from app.backend.database.db import check
-
-FAKE_TIME = datetime(2014, 12, 11, 18, 59)
-
-def next_fake_time():
-    global FAKE_TIME
-    FAKE_TIME += timedelta(minutes=1)
-    return FAKE_TIME
+from test.FakeTime import FakeTime
 
 def job_check_test():
     try:
-        fake_now = next_fake_time()
+        fake_now = FakeTime.now()
+        FakeTime.advance(minutes=1)
         print(f"[CHECK] {fake_now} -> ",check(time=fake_now))
     except Exception as e:
         print("[TEST ERROR]", e)

@@ -5,6 +5,7 @@ from app.backend.routes import sensor_routes
 from app.backend.database.db import creaDB
 from scheduler import start
 from test.scheduler_test import start_test
+from fastapi.staticfiles import StaticFiles
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -26,9 +27,7 @@ app = FastAPI(title="SmartMeter",lifespan=lifespan)
 app.add_middleware(Log)
 app.include_router(sensor_routes.router)
 
-@app.get("/")
-def root():
-    return {'message': 'Prova progetto IOT'}
+app.mount("/", StaticFiles(directory="app/frontend", html=True), name="frontend")
 
 # uvicorn main:app --reload
 if __name__ == "__main__":

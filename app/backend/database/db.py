@@ -38,13 +38,14 @@ def insData(sensor: SensorData):
         raise RuntimeError(f"[ERRORE DB] Inserimento dato fallito: {e}")
 
 
-def getAllData():
+def getGiornoData(fino_a: datetime):
     try:
+        start_of_day = datetime(fino_a.year, fino_a.month, fino_a.day)
         with Session(engine) as session:
-            res = session.exec(select(SensorData)).all()
+            res = session.exec(select(SensorData).where(SensorData.timestamp >= start_of_day,SensorData.timestamp <= fino_a)).all()
             return res
     except Exception as e:
-        raise RuntimeError(f"[ERRORE DB] Lettura dati fallita: {e}")
+        raise RuntimeError(f"[ERRORE DB] Lettura dati giornata fallita: {e}")
 
 
 def getUltimo():

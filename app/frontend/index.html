@@ -5,9 +5,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>SmartMeter</title>
         <link rel="stylesheet" href="style.css">
-        <script defer src="script.js"></script>
+        <script defer src="api.js"></script>
         <script defer src="heartbeat.js"></script>
         <script defer src="contagiri.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script defer src="chart.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     </head>
     <body>
@@ -15,12 +17,12 @@
             <div id="powerToday" class="card">
                 <p>Consumo Odierno:</p>
                 <div id="odierno">
-                    <span id="powerTodayValue">100</span>
+                    <span id="powerTodayValue">0</span>
                     <span>kWh</span>
                 </div>
             </div>
 
-            <button aria-placeholder="notifiche" class="icon-btn">
+            <button aria-placeholder="notifiche" id="notifiche" class="icon-btn">
                 <i class="fa fa-bell fa-2x" style="color:brown;"></i>
             </button>
 
@@ -45,6 +47,10 @@
             <button aria-placeholder="storico" class="icon-btn" id="storico">
                <i class="fa fa-rotate-left fa-2x" style="color:brown;"></i>
             </button>
+        </div>
+        <div id="overlay" style="display:none;">
+            <button id="chiudi" onclick="document.getElementById('overlay').style.display='none'">X</button>
+            <canvas id="storicoChart"></canvas>
         </div>
         <canvas id="demo"></canvas>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5/dat.gui.min.js"></script>

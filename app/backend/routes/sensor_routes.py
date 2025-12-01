@@ -1,8 +1,9 @@
-import datetime
+from datetime import datetime
 from fastapi import APIRouter
-from app.backend.database.db import getAllData, getUltimo, insData
+from app.backend.database.db import getGiornoData, getUltimo, insData
 from app.backend.models.sensore_db import SensorData
 from app.backend.models.sensore_model import SensorModel
+from test.FakeTime import FakeTime
 
 router = APIRouter( prefix="/sensor", tags=["Sensor"])
 
@@ -11,15 +12,20 @@ def heartBeat(sensor: SensorModel):
     try:
         datoDB = SensorData(**sensor.model_dump())
         insData(datoDB)
-        return{"status":"ok","message": "Dato Ricevuto e memorizzato nel DB", "timestamp":datetime.now(datetime.timezone.utc)}
+        return{"status":"ok","message": "Dato Ricevuto e memorizzato nel DB", "timestamp": datetime.now()}
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
 
-@router.get("/allData")
-def getAll():
+@router.get("/giornoData")
+def getGiorno(timestamp: str = None):
     try:
-        res = getAllData()
+        if timestamp:
+            ts = datetime.fromisoformat(timestamp)
+        else:
+            #ts = datetime.now()
+            ts = FakeTime.now()
+        res = getGiornoData(ts)
         if not res:
             return {"status": "None", "data": "Insieme di dati vuoto!"}
         return {"status": "ok", "data": [r.model_dump() for r in res]}

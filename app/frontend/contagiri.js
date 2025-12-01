@@ -1,5 +1,6 @@
 const arc = document.getElementById('livePowerArc');
 const valueSpan = document.getElementById('livePowerValue');
+const todaySpan = document.getElementById('powerTodayValue');
 
 function updateLivePower(kW) {
     valueSpan.textContent = kW.toFixed(2);
@@ -10,7 +11,12 @@ function updateLivePower(kW) {
     arc.setAttribute('stroke-dasharray', `${arcLength * percent} ${arcLength}`);
 }
 
-setInterval(() => {
-    const randomKW = Math.random() * 3;
-    updateLivePower(randomKW);
-}, 1000);
+function updateContatore(contatore) {
+    todaySpan.textContent = contatore.toFixed(3);
+}
+
+window.addEventListener('nuoviDati', (e) => {
+    const { contatore,potenza } = e.detail;
+    updateLivePower(potenza);
+    updateContatore(contatore);
+});

@@ -6,4 +6,4 @@ if __name__ == "__main__":
     comm = Comunicatore(sensore)
 
     print("Avvio comunicazione con il backend...")
-    comm.start()
+    comm.start(intervallo=5)

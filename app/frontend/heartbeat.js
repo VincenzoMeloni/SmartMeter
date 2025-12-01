@@ -53,14 +53,14 @@
 
     var ecg = new ECGPulse();
 
-    setInterval(async () => {
+    window.addEventListener('nuoviDati', (e) => {
+      const { potenza } = e.detail;
       const maxKw = 3;
-      const randomKW = Math.random() * maxKw;
 
-      let norm = randomKW / maxKw;
+      let norm = potenza / maxKw;
       norm = Math.max(0, Math.min(1, norm));
 
       ecg.targetPy = (ecg.h / 2) - (norm - 0.5) * 160;
-    }, 1000);
+    });
 
 }());
