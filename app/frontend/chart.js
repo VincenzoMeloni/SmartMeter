@@ -17,11 +17,12 @@ async function caricaDatiStorico() {
 
     let fasce_orarie = Array.from({length: 12}, (_, i) => {
         let start = String(i*2).padStart(2,'0') + ":00";
-        let end = (i < 11 ? String(i*2 + 2).padStart(2,'0') : "00") + ":00";
+        let end = String((i*2 + 2) % 24).padStart(2,'0') + ":00";
         return `${start}-${end}`;
     });
 
-    let potenza_per_fascia = Array(12).fill(0);
+    let somma_potenza = Array(12).fill(0);
+    let count = Array(12).fill(0);
 
     try {
         const response = await fetch(`/sensor/giornoData`);
@@ -32,14 +33,15 @@ async function caricaDatiStorico() {
             dati.forEach(dato => {
                 const ts = new Date(dato.timestamp);
                 const indice = Math.floor(ts.getHours() / 2);
-                console.log(ts, indice, dato.potenza);
-                potenza_per_fascia[indice] += dato.potenza;
+                somma_potenza[indice] += dato.potenza;
+                count[indice] += 1;
             });
         }
-
     } catch (err) {
         console.warn("Errore fetch storico:", err);
     }
+
+    let potenza_media = somma_potenza.map((somma, i) => count[i] > 0 ? somma / count[i] : 0);
 
     if (storicoChart) storicoChart.destroy();
 
@@ -48,8 +50,8 @@ async function caricaDatiStorico() {
         data: {
             labels: fasce_orarie,
             datasets: [{
-                label: 'Potenza giornaliera (kW)',
-                data: potenza_per_fascia,
+                label: 'Potenza Media (kW)',
+                data: potenza_media,
                 backgroundColor: 'rgba(75, 192, 192, 0.5)',
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1
@@ -65,8 +67,6 @@ async function caricaDatiStorico() {
             scales: {
                 y: { 
                     beginAtZero: true,
-                    min: 0,
-                    max: 3,
                     ticks: {
                         stepSize: 0.5,
                         callback: value => value + " kW"

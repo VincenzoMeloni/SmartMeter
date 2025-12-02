@@ -15,4 +15,4 @@ setInterval(async () => {
   } catch (err) {
     console.error("Errore fetch heartbeat:", err);
   }
-}, 5000);
+}, 3000);

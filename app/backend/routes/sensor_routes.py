@@ -10,7 +10,7 @@ router = APIRouter( prefix="/sensor", tags=["Sensor"])
 @router.post("/heartbeat")
 def heartBeat(sensor: SensorModel):
     try:
-        datoDB = SensorData(**sensor.model_dump())
+        datoDB = SensorData(timestamp=sensor.timestamp.replace(tzinfo=None),contatore=sensor.contatore,potenza=sensor.potenza)
         insData(datoDB)
         return{"status":"ok","message": "Dato Ricevuto e memorizzato nel DB", "timestamp": datetime.now()}
     except Exception as e:

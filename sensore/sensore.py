@@ -1,5 +1,4 @@
 from datetime import datetime, timezone
-import random
 import pandas as pd
 import os
 
@@ -19,13 +18,7 @@ class Sensore:
                 "contatore": float(row["Contatore"]),
                 "potenza": float(row["Potenza"])
             }
-        print("Invio Dati Randomici")
-        return {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "contatore": round(random.uniform(0, 100), 2),
-            "potenza": round(random.uniform(0, 5), 2)
-        }
-
+        
     def salva_indice(self):
         if self.index_path:
             df = pd.DataFrame({"index": [self.index]})

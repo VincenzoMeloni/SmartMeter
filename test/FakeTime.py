@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 class FakeTime:
-    _fake_time = datetime(2014, 12, 11, 19, 24)
+    _fake_time = datetime(2014, 12, 11, 18, 25)
 
     @classmethod
     def now(cls):
