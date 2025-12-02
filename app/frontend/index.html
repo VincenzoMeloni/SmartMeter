@@ -15,13 +15,13 @@
         <div class="above">
             <div id="powerToday" class="card">
                 <p>Consumo Totale:</p>
-                <div id="odierno">
+                <div id="totale">
                     <span id="powerTodayValue">0</span>
                     <span>kWh</span>
                 </div>
             </div>
 
-            <button aria-placeholder="notifiche" id="notifiche" class="icon-btn">
+            <button aria-placeholder="notifiche" id="notifiche" class="icon-btn" onclick="getElementById('OverlayNotifiche').style.display='flex'">
                 <i class="fa fa-bell fa-2x" style="color:brown;"></i>
             </button>
 
@@ -44,13 +44,29 @@
             <button aria-placeholder="storico" class="icon-btn" id="storico">
                <i class="fa fa-rotate-left fa-2x" style="color:brown;"></i>
             </button>
-            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         </div>
 
         <div id="overlay" style="display:none;">
-            <button id="chiudi" onclick="document.getElementById('overlay').style.display='none'">X</button>
+            <button class="chiudi" onclick="document.getElementById('overlay').style.display='none'">X</button>
             <canvas id="storicoChart"></canvas>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         </div>
+
+        <div id="OverlayNotifiche" style="display:none;">
+    
+            <div class="notifiche">
+                <div class="notifiche-header">
+                    <span>Notifiche</span>
+                    <button class="chiudiN" onclick="document.getElementById('OverlayNotifiche').style.display='none'">X</button>
+                </div>
+
+                <div class="notifiche-content">
+                    Test Notifiche
+                </div>
+            </div>
+        </div>
+
+
         <canvas id="demo"></canvas>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5/dat.gui.min.js"></script>
     </body>
