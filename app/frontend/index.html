@@ -14,7 +14,7 @@
     <body>
         <div class="above">
             <div id="powerToday" class="card">
-                <p>Consumo Odierno:</p>
+                <p>Consumo Totale:</p>
                 <div id="odierno">
                     <span id="powerTodayValue">0</span>
                     <span>kWh</span>
@@ -41,13 +41,12 @@
                 </div>
             </div>
 
-
-
             <button aria-placeholder="storico" class="icon-btn" id="storico">
                <i class="fa fa-rotate-left fa-2x" style="color:brown;"></i>
             </button>
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         </div>
+
         <div id="overlay" style="display:none;">
             <button id="chiudi" onclick="document.getElementById('overlay').style.display='none'">X</button>
             <canvas id="storicoChart"></canvas>

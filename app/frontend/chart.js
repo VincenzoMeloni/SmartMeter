@@ -50,7 +50,7 @@ async function caricaDatiStorico() {
         data: {
             labels: fasce_orarie,
             datasets: [{
-                label: 'Potenza Media (kW)',
+                label: 'Potenza Media Odierna (kW)',
                 data: potenza_media,
                 backgroundColor: 'rgba(75, 192, 192, 0.5)',
                 borderColor: 'rgba(75, 192, 192, 1)',

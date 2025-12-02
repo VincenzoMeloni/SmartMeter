@@ -2,14 +2,21 @@ from datetime import datetime, timedelta
 import schedule
 import time
 from threading import Thread
-from app.backend.database.db import check
+from app.backend.database.db import check,creaNotifica
 from test.FakeTime import FakeTime
 
 def job_check_test():
     try:
         fake_now = FakeTime.now()
         FakeTime.advance(minutes=1)
-        print(f"[CHECK] {fake_now} -> ",check(time=fake_now))
+        res = check(time=fake_now)
+        print(f"[CHECK] {fake_now} -> ",res)
+
+        if res["blackout"]:
+            creaNotifica("blackout",f"Attenzione! Blackout Rilevato alle {fake_now}")
+        
+        if res["superamento"]:
+            creaNotifica("superamento",f"Attenzione! Superamento 3kW Rilevato alle {fake_now}")
     except Exception as e:
         print("[TEST ERROR]", e)
 

@@ -1,6 +1,6 @@
 from datetime import datetime
 from fastapi import APIRouter
-from app.backend.database.db import getGiornoData, getUltimo, insData
+from app.backend.database.db import getGiornoData, getUltimo, insData, getNotificheNonLette, segnaNotificaLetta
 from app.backend.models.sensore_db import SensorData
 from app.backend.models.sensore_model import SensorModel
 from test.FakeTime import FakeTime
@@ -40,5 +40,25 @@ def getLast():
         if res is None:
             return{"status":"None","data":"Nessun ultimo dato!"}
         return{"status":"ok","data":res.model_dump()}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+@router.get("/Notifica")
+def getNotifica():
+    try:
+        res = getNotificheNonLette()
+        if not res:
+            return{"status":"None", "data": "Nessuna Notifica da mostrare!"}
+        return{"status":"ok", "data": [r.model_dump() for r in res]}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+@router.post("/Notifica/{id}")
+def segnaNotifica(id: int):
+    try:
+        res = segnaNotifica(id)
+        if not res:
+            return {"status": "error", "message": "Notifica non trovata"}
+        return{"status":"ok", "message": "Notifica segnata come letta!"}
     except Exception as e:
         return {"status": "error", "message": str(e)}

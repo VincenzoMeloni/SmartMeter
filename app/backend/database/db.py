@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from app.backend.models.sensore_db import SensorData
 from datetime import datetime, timedelta
+from app.backend.models.notifica_db import Notifica
 
 load_dotenv(dotenv_path=r"C:\INFORMATICA\Magistrale\1-ANNO\OSM-[IOT]\Progetto_IOT_residential\.env")
 
@@ -88,3 +89,38 @@ def check(time: datetime = None):
         "blackout": checkBlackout(time),
         "superamento": checkSuperamento()
     }
+
+
+def creaNotifica(tipo: str, messaggio: str):
+    try:
+        with Session(engine) as session:
+            notifica = Notifica(tipo=tipo, messaggio=messaggio)
+            session.add(notifica)
+            session.commit()
+            session.refresh(notifica)
+            return notifica
+    except Exception as e:
+        raise RuntimeError(f"[ERRORE DB] Creazione notifica fallita: {e}")
+
+
+def getNotificheNonLette():
+    try:
+        with Session(engine) as session:
+            return session.exec(select(Notifica).where(Notifica.letto == False)).all()
+    except Exception as e:
+        raise RuntimeError(f"[ERRORE DB] Recupero notifiche fallito: {e}")
+
+
+def segnaNotificaLetta(id: int):
+    try:
+        with Session(engine) as session:
+            notifica = session.get(Notifica, id)
+            if not notifica:
+                return False
+            
+            notifica.letto = True
+            session.add(notifica)
+            session.commit()
+            return True
+    except Exception as e:
+        raise RuntimeError(f"[ERRORE DB] Aggiornamento notifica fallito: {e}")

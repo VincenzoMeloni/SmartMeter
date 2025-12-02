@@ -1,11 +1,19 @@
+import datetime
 import schedule
 import time
 from threading import Thread
-from app.backend.database.db import check
+from app.backend.database.db import check,creaNotifica
 
 def job_check():
     try:
-        print("[CHECK]", check())
+        res = check()
+        print("[CHECK]", res)
+
+        if res["blackout"]:
+            creaNotifica("blackout",f"Attenzione! Blackout Rilevato alle {datetime.datetime.now}")
+        
+        if res["superamento"]:
+            creaNotifica("superamento",f"Attenzione! Superamento 3kW Rilevato alle {datetime.datetime.now}")
     except Exception as e:
         print("[CHECK ERROR]", e)
 
