@@ -91,10 +91,10 @@ def check(time: datetime = None):
     }
 
 
-def creaNotifica(tipo: str, messaggio: str):
+def creaNotifica(time:datetime, tipo: str, messaggio: str):
     try:
         with Session(engine) as session:
-            notifica = Notifica(tipo=tipo, messaggio=messaggio)
+            notifica = Notifica(timestamp=time, tipo=tipo, messaggio=messaggio)
             session.add(notifica)
             session.commit()
             session.refresh(notifica)
@@ -103,10 +103,10 @@ def creaNotifica(tipo: str, messaggio: str):
         raise RuntimeError(f"[ERRORE DB] Creazione notifica fallita: {e}")
 
 
-def getNotificheNonLette():
+def getNotifiche():
     try:
         with Session(engine) as session:
-            return session.exec(select(Notifica).where(Notifica.letto == False)).all()
+            return session.exec(select(Notifica)).all() 
     except Exception as e:
         raise RuntimeError(f"[ERRORE DB] Recupero notifiche fallito: {e}")
 
@@ -124,3 +124,16 @@ def segnaNotificaLetta(id: int):
             return True
     except Exception as e:
         raise RuntimeError(f"[ERRORE DB] Aggiornamento notifica fallito: {e}")
+
+def deleteNotifica(id: int):
+    try:
+        with Session(engine) as session:
+            notifica = session.get(Notifica, id)
+            if not notifica:
+                return False
+            
+            session.delete(notifica)
+            session.commit()
+            return True
+    except Exception as e:
+        raise RuntimeError(f"[ERRORE DB] Cancellazione notifica fallita: {e}")

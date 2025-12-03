@@ -13,10 +13,10 @@ def job_check_test():
         print(f"[CHECK] {fake_now} -> ",res)
 
         if res["blackout"]:
-            creaNotifica("blackout",f"Attenzione! Blackout Rilevato alle {fake_now}")
+            creaNotifica(fake_now,"blackout","Attenzione! Blackout Rilevato!")
         
         if res["superamento"]:
-            creaNotifica("superamento",f"Attenzione! Superamento 3kW Rilevato alle {fake_now}")
+            creaNotifica(fake_now,"superamento","Attenzione! Superamento 3kW Rilevato!")
     except Exception as e:
         print("[TEST ERROR]", e)
 

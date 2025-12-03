@@ -10,10 +10,10 @@ def job_check():
         print("[CHECK]", res)
 
         if res["blackout"]:
-            creaNotifica("blackout",f"Attenzione! Blackout Rilevato alle {datetime.datetime.now}")
+            creaNotifica(datetime.datetime.now,"blackout","Attenzione! Blackout Rilevato!")
         
         if res["superamento"]:
-            creaNotifica("superamento",f"Attenzione! Superamento 3kW Rilevato alle {datetime.datetime.now}")
+            creaNotifica(datetime.datetime.now,"superamento","Attenzione! Superamento 3kW Rilevato!")
     except Exception as e:
         print("[CHECK ERROR]", e)
 

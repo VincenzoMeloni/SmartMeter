@@ -1,18 +1,23 @@
 setInterval(async () => {
   try {
-    const response = await fetch('/sensor/heartbeat');
-    const json = await response.json();
+    const [hbRes, notifRes] = await Promise.all([
+      fetch('/sensor/heartbeat'),
+      fetch('/sensor/Notifica')
+    ]);
 
-    if (json.status !== 'ok') {
-      console.warn("Backend non ha dati:", json);
-      return;
+    const hbJson = await hbRes.json();
+    const notifJson = await notifRes.json();
+
+    if (hbJson.status === 'ok') {
+      window.dispatchEvent(new CustomEvent('nuoviDati', { detail: hbJson.data }));
     }
 
-    window.dispatchEvent(new CustomEvent('nuoviDati', {
-      detail: json.data
-    }));
+    if (notifJson.status === 'ok') {
+      window.dispatchEvent(new CustomEvent('nuoveNotifiche', { detail: notifJson.data }));
+    }
 
   } catch (err) {
-    console.error("Errore fetch heartbeat:", err);
+    console.error("Errore fetch periodico:", err);
+    window.dispatchEvent(new CustomEvent('nuoveNotifiche', { detail: [] }));
   }
 }, 3000);
