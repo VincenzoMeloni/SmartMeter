@@ -21,7 +21,7 @@ def job_check_test():
         print("[TEST ERROR]", e)
 
 
-def run_test(seconds=10):
+def run_test(seconds=3):
     schedule.every(seconds).seconds.do(job_check_test)
     print("[TEST] Scheduler di test avviato...")
 

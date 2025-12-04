@@ -8,6 +8,8 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener('nuoveNotifiche', (e) => {
     const notifiche = e.detail;
 
+    notifiche.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
     if (!notifiche || notifiche.length === 0) {
       container.innerHTML = "<div class='notifica-messaggio' style='text-align: center;'>Nessuna Notifica da Mostrare</div>";
       aggiornaBadge([]);
