@@ -17,8 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     container.innerHTML = notifiche.map(n => `
-      <div class="notifica ${n.letto ? '' : 'non-letto'}" data-id="${n.id}">
-        <div class="notifica-text" onclick="segnaNotificaLetta(${n.id})">
+      <div class="notifica ${n.letto ? '' : 'non-letto'}" data-id="${n.id}"  onclick="segnaNotificaLetta(${n.id})">
+        <div class="notifica-text">
           <div class="notifica-messaggio">${n.messaggio}</div>
           <div class="notifica-timestamp">${formattaData(n.timestamp)}</div>
         </div>
