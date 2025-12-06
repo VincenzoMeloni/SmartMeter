@@ -1,4 +1,3 @@
-from datetime import datetime, timedelta
 import schedule
 import time
 from threading import Thread
