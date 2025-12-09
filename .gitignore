@@ -3,3 +3,5 @@ __pycache__/
 venv/
 .env
 *.bat
+csv_filter.py
+filtra_dataset.py

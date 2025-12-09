@@ -47,4 +47,5 @@ class FakeTime:
         except Exception as e:
             print(f"[FakeTime] Errore caricamento timestamp: {e}")
 
+
 FakeTime.load_from_csv(indice_path)
