@@ -1,8 +1,10 @@
-import datetime
-from sqlmodel import SQLModel, Field
+from dataclasses import dataclass
+from typing import Optional
+from datetime import datetime
 
-class SensorData(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
-    timestamp: datetime.datetime
-    contatore: float
-    potenza: float
+@dataclass
+class SensorData:
+    id: Optional[int] = None
+    timestamp: datetime = None
+    contatore: float = 0.0
+    potenza: float = 0.0

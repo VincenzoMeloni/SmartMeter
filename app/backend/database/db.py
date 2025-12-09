@@ -1,68 +1,81 @@
-from sqlmodel import SQLModel, Session, create_engine, select
+import pandas as pd
 import os
-from dotenv import load_dotenv
-from app.backend.models.sensore_db import SensorData
 from datetime import datetime, timedelta
+from app.backend.models.sensore_db import SensorData
 from app.backend.models.notifica_db import Notifica
+from threading import Lock
 
-load_dotenv(dotenv_path=r"C:\INFORMATICA\Magistrale\1-ANNO\OSM-[IOT]\Progetto_IOT_residential\.env")
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 
-DB_USER = os.getenv("DB_USER")
-DB_PASSWORD = os.getenv("DB_PASSWORD")
-DB_HOST = os.getenv("DB_HOST")
-DB_PORT = os.getenv("DB_PORT")
-DB_NAME = os.getenv("DB_NAME")
+DATI_DIR = os.path.join(BASE_DIR, "dati")
+os.makedirs(DATI_DIR, exist_ok=True)
 
-DATABASE_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+DATA_FILE = os.path.join(DATI_DIR, "sensor_data.csv")
+NOTIF_FILE = os.path.join(DATI_DIR, "notifiche.csv")
 
-try:
-    engine = create_engine(DATABASE_URL, echo=False)
-except Exception as e:
-    raise RuntimeError(f"[ERRORE DB] Creazione engine fallita: {e}")
+def _load_df(path, columns):
+    if os.path.exists(path):
+        return pd.read_csv(path, parse_dates=["timestamp"])
+    else:
+        return pd.DataFrame({col: pd.Series(dtype="object") for col in columns})
 
-def creaDB():
-    try:
-        SQLModel.metadata.create_all(engine)
-        print("[DB] OK.")
-    except Exception as e:
-        raise RuntimeError(f"[ERRORE DB] Creazione DB fallita: {e}")
+
+def _save_df(df: pd.DataFrame, path):
+    df.to_csv(path, index=False)
 
 
 def insData(sensor: SensorData):
-    try:
-        with Session(engine) as session:
-            session.add(sensor)
-            session.commit()
-            session.refresh(sensor)
-            return sensor
-    except Exception as e:
-        raise RuntimeError(f"[ERRORE DB] Inserimento dato fallito: {e}")
+    df = _load_df(DATA_FILE, ["id", "timestamp", "contatore", "potenza"])
 
+    if not df.empty:
+        df = df.dropna(how='all', axis=1)
+
+    new_id = (df["id"].max() + 1) if not df.empty else 1
+
+    new_df = pd.DataFrame([{
+        "id": int(new_id),
+        "timestamp": sensor.timestamp.replace(tzinfo=None) if sensor.timestamp.tzinfo else sensor.timestamp,
+        "contatore": float(sensor.contatore),
+        "potenza": float(sensor.potenza)
+    }])
+
+    df = pd.concat([df, new_df], ignore_index=True)
+
+    _save_df(df, DATA_FILE)
+
+    return SensorData(
+        id=int(new_id),
+        timestamp=sensor.timestamp.replace(tzinfo=None) if sensor.timestamp.tzinfo else sensor.timestamp,
+        contatore=float(sensor.contatore),
+        potenza=float(sensor.potenza)
+    )
+
+
+
+def _row_to_sensordata(row):
+    return SensorData(
+        timestamp=pd.Timestamp(row["timestamp"]).to_pydatetime(),
+        contatore=float(row["contatore"]),
+        potenza=float(row["potenza"])
+    )
 
 def getGiornoData(fino_a: datetime):
-    try:
-        start_of_day = datetime(fino_a.year, fino_a.month, fino_a.day)
-        with Session(engine) as session:
-            res = session.exec(select(SensorData).where(SensorData.timestamp >= start_of_day,SensorData.timestamp <= fino_a)).all()
-            return res
-    except Exception as e:
-        raise RuntimeError(f"[ERRORE DB] Lettura dati giornata fallita: {e}")
-
+    df = _load_df(DATA_FILE, ["timestamp", "contatore", "potenza"])
+    start = fino_a.replace(hour=0, minute=0, second=0, microsecond=0)
+    df = df[(df["timestamp"] >= start) & (df["timestamp"] <= fino_a)]
+    return [_row_to_sensordata(row) for _, row in df.iterrows()]
 
 def getUltimo():
-    try:
-        with Session(engine) as session:
-            res = session.exec(select(SensorData).order_by(SensorData.timestamp.desc())).first()
-            return res
-    except Exception as e:
-        raise RuntimeError(f"[ERRORE DB] Recupero ultimo dato fallito: {e}")
+    df = _load_df(DATA_FILE, ["timestamp", "contatore", "potenza"])
+    if df.empty:
+        return None
+    row = df.sort_values("timestamp", ascending=False).iloc[0]
+    return _row_to_sensordata(row)
 
 def getUltimi(n: int):
-    try:
-        with Session(engine) as session:
-            return session.exec(select(SensorData).order_by(SensorData.timestamp.desc()).limit(n)).all()
-    except Exception as e:
-        raise RuntimeError(f"[ERRORE DB] Recupero ultimi {n} dati fallito: {e}")
+    df = _load_df(DATA_FILE, ["timestamp", "contatore", "potenza"])
+    df = df.sort_values("timestamp", ascending=False).head(n)
+    return [_row_to_sensordata(row) for _, row in df.iterrows()]
 
 def checkBlackout(time: datetime = None):
     ultimi = getUltimi(3)
@@ -80,60 +93,72 @@ def checkBlackout(time: datetime = None):
 
     return False
 
+
 def checkSuperamento():
     ultimo = getUltimo()
     return ultimo is not None and ultimo.potenza >= 3
 
+
 def check(time: datetime = None):
-    return{
-        "blackout": checkBlackout(time),
-        "superamento": checkSuperamento()
+    return {
+        "blackout": bool(checkBlackout(time)),
+        "superamento": bool(checkSuperamento())
     }
 
+_notif_lock = Lock()
 
-def creaNotifica(time:datetime, tipo: str, messaggio: str):
-    try:
-        with Session(engine) as session:
-            notifica = Notifica(timestamp=time, tipo=tipo, messaggio=messaggio)
-            session.add(notifica)
-            session.commit()
-            session.refresh(notifica)
-            return notifica
-    except Exception as e:
-        raise RuntimeError(f"[ERRORE DB] Creazione notifica fallita: {e}")
+def creaNotifica(time: datetime, tipo: str, messaggio: str):
+    with _notif_lock:
+        df = _load_df(NOTIF_FILE, ["id", "timestamp", "tipo", "messaggio", "letto"])
+
+        if not df.empty:
+            df = df[df["id"].notna()]
+            df["id"] = df["id"].astype(int)
+
+        new_id = int(df["id"].max() + 1) if not df.empty else 1
+
+        new_df = pd.DataFrame([{
+            "id": new_id,
+            "timestamp": time,
+            "tipo": tipo,
+            "messaggio": messaggio,
+            "letto": False
+        }])
+
+        df = pd.concat([df, new_df], ignore_index=True)
+        _save_df(df, NOTIF_FILE)
+        return Notifica(id=new_id, timestamp=time, tipo=tipo, messaggio=messaggio)
 
 
 def getNotifiche():
-    try:
-        with Session(engine) as session:
-            return session.exec(select(Notifica)).all() 
-    except Exception as e:
-        raise RuntimeError(f"[ERRORE DB] Recupero notifiche fallito: {e}")
+    df = _load_df(NOTIF_FILE, ["id", "timestamp", "tipo", "messaggio", "letto"])
+    if not df.empty:
+        df = df[df["id"].notna()]
+        df["id"] = df["id"].astype(int)
+    return [Notifica(**row) for _, row in df.iterrows()]
 
 
 def segnaNotificaLetta(id: int):
-    try:
-        with Session(engine) as session:
-            notifica = session.get(Notifica, id)
-            if not notifica:
-                return False
-            
-            notifica.letto = True
-            session.add(notifica)
-            session.commit()
-            return True
-    except Exception as e:
-        raise RuntimeError(f"[ERRORE DB] Aggiornamento notifica fallito: {e}")
+    with _notif_lock:
+        df = _load_df(NOTIF_FILE, ["id", "timestamp", "tipo", "messaggio", "letto"])
+        if not df.empty:
+            df = df[df["id"].notna()]
+            df["id"] = df["id"].astype(int)
+        if id not in df["id"].values:
+            return False
+        df.loc[df["id"] == id, "letto"] = True
+        _save_df(df, NOTIF_FILE)
+        return True
+
 
 def deleteNotifica(id: int):
-    try:
-        with Session(engine) as session:
-            notifica = session.get(Notifica, id)
-            if not notifica:
-                return False
-            
-            session.delete(notifica)
-            session.commit()
-            return True
-    except Exception as e:
-        raise RuntimeError(f"[ERRORE DB] Cancellazione notifica fallita: {e}")
+    with _notif_lock:
+        df = _load_df(NOTIF_FILE, ["id", "timestamp", "tipo", "messaggio", "letto"])
+        if not df.empty:
+            df = df[df["id"].notna()]
+            df["id"] = df["id"].astype(int)
+        if id not in df["id"].values:
+            return False
+        df = df[df["id"] != id]
+        _save_df(df, NOTIF_FILE)
+        return True

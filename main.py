@@ -2,22 +2,16 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.backend.middleware.logginMidd import Log
 from app.backend.routes import sensor_routes
-from app.backend.database.db import creaDB
-from scheduler import start
 from test.scheduler_test import start_test
 from fastapi.staticfiles import StaticFiles
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     try:
-        creaDB()
-        print("DB OK")
+        start_test()
+        print("Scheduler avviato.")
     except Exception as e:
-        print(f"Errore DB: {str(e)}")
-        raise SystemExit("Server Arrestato.")
-
-    start_test()
-    print("Scheduler avviato.")
+        print("Errore avvio scheduler:", e)
 
     yield
     print("Server in spegnimento...")

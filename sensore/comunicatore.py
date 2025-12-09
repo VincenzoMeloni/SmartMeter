@@ -3,7 +3,7 @@ import requests
 import os
 import schedule
 from dotenv import load_dotenv
-from sensore import Sensore
+from sensore.sensore import Sensore
 
 load_dotenv()
 
@@ -22,8 +22,9 @@ class Comunicatore:
         try:
             r = requests.post(f"{self.backend_url}/sensor/heartbeat", json=dato, timeout=5)
             if r.status_code == requests.codes.ok:
-                print(f"Status: {r.status_code} , salvo l'indice")
+                print(f"Status: {r.status_code} , salvo indice e timestamp")
                 self.sensore.index+=1
+                self.sensore.last_timestamp = dato["timestamp"]
                 self.sensore.salva_indice()
             else:
                 print(f"Errore dal server: {r.status_code} - {r.text}")

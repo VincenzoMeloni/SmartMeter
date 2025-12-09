@@ -1,3 +1,4 @@
+from dataclasses import asdict
 from datetime import datetime
 from fastapi import APIRouter
 from app.backend.database.db import getGiornoData, getUltimo, insData, getNotifiche, segnaNotificaLetta , deleteNotifica
@@ -10,9 +11,9 @@ router = APIRouter( prefix="/sensor", tags=["Sensor"])
 @router.post("/heartbeat")
 def heartBeat(sensor: SensorModel):
     try:
-        datoDB = SensorData(timestamp=sensor.timestamp.replace(tzinfo=None),contatore=sensor.contatore,potenza=sensor.potenza)
+        datoDB = SensorData(timestamp=sensor.timestamp,contatore=sensor.contatore,potenza=sensor.potenza)
         insData(datoDB)
-        return{"status":"ok","message": "Dato Ricevuto e memorizzato nel DB", "timestamp": datetime.now()}
+        return{"status":"ok","message": "Dato Ricevuto", "timestamp": datetime.now()}
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
@@ -28,7 +29,7 @@ def getGiorno(timestamp: str = None):
         res = getGiornoData(ts)
         if not res:
             return {"status": "None", "data": "Insieme di dati vuoto!"}
-        return {"status": "ok", "data": [r.model_dump() for r in res]}
+        return {"status": "ok", "data": [asdict(r) for r in res]}
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
@@ -39,7 +40,7 @@ def getLast():
         res = getUltimo()
         if res is None:
             return{"status":"None","data":"Nessun ultimo dato!"}
-        return{"status":"ok","data":res.model_dump()}
+        return{"status":"ok","data":asdict(res)}
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
@@ -47,9 +48,7 @@ def getLast():
 def getNotifica():
     try:
         res = getNotifiche()
-        if not res:
-            return{"status":"None", "data": "Nessuna Notifica da mostrare!"}
-        return{"status":"ok", "data": [r.model_dump() for r in res]}
+        return{"status":"ok", "data": [asdict(r) for r in res]}
     except Exception as e:
         return {"status": "error", "message": str(e)}
 

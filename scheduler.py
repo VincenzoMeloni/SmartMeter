@@ -24,6 +24,11 @@ def run(seconds=10):
         schedule.run_pending()
         time.sleep(1)
 
-def start():
-    thread = Thread(target=run, daemon=True)
-    thread.start()
+def start_test():
+    try:
+        thread = Thread(target=run, daemon=True)
+        thread.start()
+    except Exception as e:
+        print("[START ERROR]", e)
+        raise
+

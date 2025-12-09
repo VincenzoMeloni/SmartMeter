@@ -1,4 +1,3 @@
-from datetime import datetime, timezone
 import pandas as pd
 import os
 
@@ -7,8 +6,8 @@ class Sensore:
         self.csv_path = csv_path
         self.index_path = index_path
         self.data = pd.read_csv(csv_path) if csv_path else None
-        self.index = self.carica_indice()
-    
+        self.index, self.last_timestamp = self.carica_indice()
+
     def leggi_dato(self):
         if self.data is not None and self.index < len(self.data):
             print("DATASET.CSV")
@@ -21,13 +20,17 @@ class Sensore:
         
     def salva_indice(self):
         if self.index_path:
-            df = pd.DataFrame({"index": [self.index]})
+            df = pd.DataFrame({
+                "index": [self.index],
+                "timestamp": [self.last_timestamp]
+            })
             df.to_csv(self.index_path, index=False)
-    
 
     def carica_indice(self):
         if self.index_path and os.path.exists(self.index_path):
             df = pd.read_csv(self.index_path)
-            if "index" in df.columns:
-                return int(df["index"].iloc[0])
-        return 0
+            if "index" in df.columns and "timestamp" in df.columns:
+                idx = int(df["index"].iloc[0])
+                ts = pd.to_datetime(df["timestamp"].iloc[0]).replace(tzinfo=None)
+                return idx, ts
+        return 0, None

@@ -1,8 +1,14 @@
-from sensore import Sensore
-from comunicatore import Comunicatore
+import os
+from sensore.sensore import Sensore
+from sensore.comunicatore import Comunicatore
 
 if __name__ == "__main__":
-    sensore = Sensore(csv_path="../dataset/DATASET.csv",index_path="../dataset/indice.csv")
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+
+    dataset_path = os.path.join(base_dir, "../dataset/DATASET.csv")
+    indice_path = os.path.join(base_dir, "../dataset/indice.csv")
+
+    sensore = Sensore(csv_path=dataset_path, index_path=indice_path)
     comm = Comunicatore(sensore)
 
     print("Avvio comunicazione con il backend...")

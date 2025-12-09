@@ -1,9 +1,10 @@
-import datetime
-from sqlmodel import SQLModel, Field
+from dataclasses import dataclass
+from datetime import datetime
 
-class Notifica(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
-    timestamp: datetime.datetime
+@dataclass
+class Notifica:
+    id: int | None
+    timestamp: datetime
     tipo: str
     messaggio: str
-    letto: bool = Field(default=False)
+    letto: bool = False
