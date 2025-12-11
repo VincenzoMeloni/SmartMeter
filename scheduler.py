@@ -11,7 +11,6 @@ def job_check_test():
 
         gestisci_notifica("blackout", res["blackout"], "Attenzione! Blackout Rilevato!")
         gestisci_notifica("superamento", res["superamento"], "Attenzione! Superamento 3kW Rilevato!")
-
     except Exception as e:
         print("[ERROR]", e)
 

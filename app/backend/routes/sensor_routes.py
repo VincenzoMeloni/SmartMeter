@@ -1,12 +1,16 @@
 from dataclasses import asdict
 from datetime import datetime
-from fastapi import APIRouter
+import os
+from fastapi import APIRouter, HTTPException
+from fastapi.responses import FileResponse
 from app.backend.database.db import getGiornoData, getUltimo, insData, getNotifiche, segnaNotificaLetta , deleteNotifica
 from app.backend.models.sensore_db import SensorData
 from app.backend.models.sensore_model import SensorModel
 from test.FakeTime import FakeTime
 
 router = APIRouter( prefix="/sensor", tags=["Sensor"])
+
+CSV_PATH = os.path.join("dati", "sensor_data.csv")
 
 @router.post("/heartbeat")
 def heartBeat(sensor: SensorModel):
@@ -71,3 +75,14 @@ def elimina_notifica(id: int):
         return {"status": "ok", "message": "Notifica eliminata correttamente!"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
+
+@router.get("/download")
+def scarica():
+    if not os.path.exists(CSV_PATH):
+        raise HTTPException(status_code=404, detail="Dati non disponibili")
+
+    return FileResponse(
+        CSV_PATH,
+        media_type="text/csv",
+        filename="sensor_data.csv"
+    )

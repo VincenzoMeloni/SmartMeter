@@ -4,16 +4,21 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>SmartMeter</title>
+        <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg">
         <link rel="stylesheet" href="style.css">
         <script defer src="api.js"></script>
         <script defer src="heartbeat.js"></script>
         <script defer src="contagiri.js"></script>
         <script defer src="chart.js"></script>
         <script defer src="notifiche.js"></script>
+        <script defer src="download.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     </head>
     <body>
         <div class="above">
+            <button aria-placeholder="scarica" id="scarica" class="icon-btn">
+                <i class="fa fa-download fa-2x" style="color: brown;"></i>
+            </button>
             <div id="powerToday" class="card">
                 <p>Consumo Totale:</p>
                 <div id="totale">

@@ -21,7 +21,6 @@ body{
   top: 10%;
   left: 50%;
   transform: translateX(-50%);
-
   display: flex;
   justify-content: center;
   align-items: center;
@@ -64,7 +63,12 @@ body{
   z-index: 2000;
 }
 
-#storico i:hover, #notifiche i:hover{
+#scarica{
+  position: relative;
+  right: 400px;
+}
+
+#storico i:hover, #notifiche i:hover, #scarica i:hover{
   color: #eb1313 !important;
   transform: scale(1.2);
   transition: transform 0.3s ease, color 0.3s ease;
@@ -76,13 +80,12 @@ body{
   transition: transform 0.3s ease, color 0.3s ease;
 }
 
-
 #powerToday p,#livePower p {
-    font-size: 18px;
-    font-weight: 600;
-    margin: 5px 0;
-    Color: brown;
-    font-weight: bold;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 5px 0;
+  color: brown;
+  font-weight: bold;
 }
 
 #powerToday span:first-child{
@@ -273,8 +276,23 @@ canvas {
   background:transparent;
 }
 
+@media (max-width: 1500px){
+  #storico {
+    left: 20px;
+    max-width: 100%;
+    min-width: 35px;
+    overflow-x: hidden;
+  }
 
-@media (max-width: 1400px) {
+  #scarica{
+    right: 20px;
+    max-width: 100%;
+    min-width: 35px;
+    overflow-x: hidden;
+  }
+}
+
+@media (max-width: 1440px) {
   #storico {
     left: 0;
     max-width: 100%;
@@ -282,8 +300,15 @@ canvas {
     overflow-x: hidden;
   }
 
+  #scarica{
+    right: 0;
+    max-width: 100%;
+    min-width: 35px;
+    overflow-x: hidden;
+  }
+
   body{
-  background-size: 10px 50px, 50px 50px, 1500px 290px;
+    background-size: 10px 50px, 50px 50px, 1500px 290px;
   }
 
   .above {
