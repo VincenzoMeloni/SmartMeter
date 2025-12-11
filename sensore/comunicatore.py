@@ -10,7 +10,7 @@ load_dotenv()
 class Comunicatore:
     def __init__(self, sensore: Sensore):
         self.sensore = sensore
-        self.backend_url = os.getenv("BACKEND_URL")
+        self.backend_url = f"http://{os.getenv('HOST')}:{os.getenv('PORT')}"
 
     def invia_dato(self):
         dato = self.sensore.leggi_dato()

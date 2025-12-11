@@ -9,7 +9,7 @@ document.getElementById("scarica").addEventListener("click", async (e) => {
             return;
         }
 
-        const conferma = confirm("Vuoi scaricare il file CSV?");
+        const conferma = confirm("Vuoi scaricare i log del sensore?");
         if (!conferma) return;
 
         const blob = await response.blob();

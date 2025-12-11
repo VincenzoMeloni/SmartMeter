@@ -1,9 +1,13 @@
 from contextlib import asynccontextmanager
+import os
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from app.backend.middleware.logginMidd import Log
 from app.backend.routes import sensor_routes
 from test.scheduler_test import start_test
 from fastapi.staticfiles import StaticFiles
+
+load_dotenv()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -26,4 +30,4 @@ app.mount("/", StaticFiles(directory="app/frontend", html=True), name="frontend"
 # uvicorn main:app --reload
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host=f"{os.getenv('HOST')}", port=int(os.getenv("PORT")))
