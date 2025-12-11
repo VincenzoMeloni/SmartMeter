@@ -80,9 +80,5 @@ def elimina_notifica(id: int):
 def scarica():
     if not os.path.exists(CSV_PATH):
         raise HTTPException(status_code=404, detail="Dati non disponibili")
-
-    return FileResponse(
-        CSV_PATH,
-        media_type="text/csv",
-        filename="sensor_data.csv"
-    )
+    
+    return FileResponse(CSV_PATH,media_type="text/csv",filename="sensor_data.csv")
