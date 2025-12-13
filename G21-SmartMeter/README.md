@@ -4,7 +4,7 @@
 
 **SmartMeter** è un progetto IOT, collocato nel contesto delle _Smart Home_, mirato alla realizzazione di un sensore che, leggendo i dati dal contatore domestico, permetta il monitoraggio energetico in tempo reale e il rilevamento di eventuali anomalie, quali blackout o superamenti della soglia di potenza.
 
-Il progetto è stato sviluppato utilizzando _Python_ per lo sviluppo del Back-End e del Sensore. Per il Front-End è stata sviluppata una dashboard in _HTML_, _JavaScript_ e _CSS_.
+Il progetto è stato sviluppato utilizzando _Python_ per lo sviluppo del Back-End e del Sensore. Per il Front-End è stata realizzata una dashboard in _HTML_, _JavaScript_ e _CSS_.
 
 Per lo sviluppo è stato utilizzato l’IDE **Visual Studio Code**
 
