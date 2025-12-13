@@ -71,13 +71,25 @@ Lanciare il seguente comando da terminale:
 
     source venv/bin/activate
 
-### 4. Installare Le Dipendenze
+### 4. Creare il file .env
+
+Copia il file di esempio _.env.example_ in _.env_
+
+**Windows** (cmd)
+
+    copy .env.example .env
+
+**MacOS/Linux**:
+
+    cp .env.example .env
+
+### 5. Installare Le Dipendenze
 
 All'interno dell'ambiente virtuale eseguire:
 
     python -m pip install -r requirements.txt
 
-### 5. Avviare il Progetto
+### 6. Avviare il Progetto
 
 Aprire 2 terminali separati, entrambi con l'ambiente virtuale attivo.
 
