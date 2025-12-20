@@ -3,12 +3,8 @@ const overlay = document.getElementById('overlay');
 let storicoChart = null;
 
 btn.addEventListener('click', () => {
-    if (overlay.style.display === 'none' || overlay.style.display === '') {
-        overlay.style.display = 'flex';
-        caricaDatiStorico();
-    } else {
-        overlay.style.display = 'none';
-    }
+    openOverlay();
+    caricaDatiStorico();
 });
 
 async function caricaDatiStorico() {
@@ -79,4 +75,13 @@ async function caricaDatiStorico() {
             }
         }
     });
+}
+
+function openOverlay() {
+    overlay.classList.add('show');
+    caricaDatiStorico();
+}
+
+function closeOverlay() {
+    overlay.classList.remove('show');
 }

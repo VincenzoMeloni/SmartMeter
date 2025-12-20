@@ -28,9 +28,11 @@ Il sensore prende in input un Dataset in formato csv così composto:
 
 **O2.** Il backend riceve questi dati e li salva progressivamente all'interno di un file **sensor_data.csv** così strutturato:
 
-1. **timestamp**: [_datetime_] inizio del periodo di riferimento
-2. **contatore**: [_float_] valore dell'energia consumata in kWh
-3. **potenza**: [_float_] potenza istantanea prelevata in kW
+1. **id**: [_int_] Identificativo univoco
+2. **timestamp**: [_datetime_] inizio del periodo di riferimento
+3. **contatore**: [_float_] valore dell'energia consumata in kWh
+4. **potenza**: [_float_] potenza istantanea prelevata in kW
+5. **fake**: [_boolean_] flag che indica se il dato è stato generato dal sensore o inserito manualmente tramite una POST esterna
 
 **O3.** Uno scheduler analizza periodicamente i dati aggiornati e genera un dizionario Python che indica la presenza di eventuali anomalie:
 
@@ -38,6 +40,15 @@ Il sensore prende in input un Dataset in formato csv così composto:
 
 - blackout -> **True** in caso di interruzione dell’erogazione (potenza = 0 kW)
 - superamento -> **True** quando la potenza supera la soglia massima (potenza >= 3 kW)
+
+**04** In presenza di anomalie, il sistema registra notifiche per l’utente in un file **notifiche.csv** così formato:
+
+1. **id**: [_int_] Identificativo univoco
+2. **timestamp**: [_datetime_] istante di riferimento dell’evento
+3. **tipo**: [_string_] tipologia di anomalia (Superamento o Blackout)
+4. **messaggio**: [_string_] contenuto descrittivo della notifica
+5. **attivo**: [_boolean_] indica se l’evento a cui si riferisce la notifica è ancora in corso
+6. **letto**: [_boolean_] indica se la notifica è stata letta dall’utente
 
 ---
 

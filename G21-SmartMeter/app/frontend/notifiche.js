@@ -1,9 +1,23 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const overlay = document.getElementById("OverlayNotifiche");
+  const btnNotifiche = document.getElementById("notifiche");
   const container = document.querySelector('#OverlayNotifiche .notifiche-content');
+
   if (!container) {
     console.error("Container notifiche non trovato!");
     return;
   }
+
+  btnNotifiche.addEventListener("click", (e) => {
+    e.stopPropagation();
+    overlay.classList.toggle("aperto");
+  });
+
+  document.addEventListener("click", (e) => {
+    if (overlay.classList.contains("aperto") && !overlay.contains(e.target) && e.target !== btnNotifiche) {
+      overlay.classList.remove("aperto");
+    }
+  });
 
   window.addEventListener('nuoveNotifiche', (e) => {
     const notifiche = e.detail;
@@ -17,14 +31,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     container.innerHTML = notifiche.map(n => `
-      <div class="notifica ${n.letto ? '' : 'non-letto'}" data-id="${n.id}"  onclick="segnaNotificaLetta(${n.id})">
+      <div class="notifica ${n.letto ? '' : 'non-letto'}" data-id="${n.id}" onclick="segnaNotificaLetta(${n.id})">
         <div class="notifica-text">
           <div class="notifica-messaggio">${n.messaggio}</div>
-          <div class="notifica-timestamp">${formattaData(n.timestamp)}</div>
+          <div class="notifica-footer">
+            <div class="notifica-timestamp">${formattaData(n.timestamp)}</div>
+            <button class="notifica-delete" onclick="eliminaNotifica(${n.id})">
+              <i class="fa fa-trash"></i>
+            </button>
+          </div>
         </div>
-        <button class="notifica-delete" onclick="eliminaNotifica(${n.id})">
-          <i class="fa fa-trash"></i>
-        </button>
       </div>
     `).join("");
     aggiornaBadge(notifiche);

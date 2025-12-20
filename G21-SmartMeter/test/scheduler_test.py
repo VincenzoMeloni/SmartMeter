@@ -1,7 +1,7 @@
 import schedule
 import time
 from threading import Thread
-from app.backend.database.db import check,creaNotifica, getNotifiche, segnaNotificaLetta
+from app.backend.database.db import check, chiudiNotificaAttiva,creaNotifica, getNotifiche
 from test.FakeTime import FakeTime
 
 def job_check_test():
@@ -17,15 +17,14 @@ def job_check_test():
         print("[TEST ERROR]", e)
 
 
-def gestisci_notifica(fake_now, tipo, condizione, messaggio):
+def gestisci_notifica(time, tipo, condizione, messaggio):
     notifiche = getNotifiche()
-    attivo = any(n.tipo == tipo and not n.letto for n in notifiche)
-    if condizione and not attivo:
-        creaNotifica(fake_now, tipo, messaggio)
-    elif not condizione:
-        for n in notifiche:
-            if n.tipo == tipo and not n.letto:
-                segnaNotificaLetta(n.id)
+    attiva = any(n.tipo == tipo and n.attivo for n in notifiche)
+
+    if condizione and not attiva:
+        creaNotifica(time, tipo, messaggio)
+    elif not condizione and attiva:
+        chiudiNotificaAttiva(tipo)
 
 
 def run_test(seconds=3):

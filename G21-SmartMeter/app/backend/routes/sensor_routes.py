@@ -15,9 +15,8 @@ CSV_PATH = os.path.join("dati", "sensor_data.csv")
 @router.post("/heartbeat")
 def heartBeat(sensor: SensorModel):
     try:
-        datoDB = SensorData(timestamp=sensor.timestamp,contatore=sensor.contatore,potenza=sensor.potenza)
-        insData(datoDB)
-        return{"status":"ok","message": "Dato Ricevuto", "timestamp": datetime.now()}
+        result = insData(sensor)
+        return{"status":"ok","message": "Dato Ricevuto", "timestamp": result.timestamp}
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
@@ -28,7 +27,6 @@ def getGiorno(timestamp: str = None):
         if timestamp:
             ts = datetime.fromisoformat(timestamp)
         else:
-            #ts = datetime.now()
             ts = FakeTime.now()
         res = getGiornoData(ts)
         if not res:

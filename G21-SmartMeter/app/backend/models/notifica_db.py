@@ -8,3 +8,4 @@ class Notifica:
     tipo: str
     messaggio: str
     letto: bool = False
+    attivo: bool = True
