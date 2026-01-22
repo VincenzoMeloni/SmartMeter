@@ -41,7 +41,7 @@ Il sensore prende in input un Dataset in formato csv così composto:
 - blackout -> **True** in caso di interruzione dell’erogazione (potenza = 0 kW)
 - superamento -> **True** quando la potenza supera la soglia massima (potenza >= 3 kW)
 
-**04** In presenza di anomalie, il sistema registra notifiche per l’utente in un file **notifiche.csv** così formato:
+**O4.** In presenza di anomalie, il sistema registra notifiche per l’utente in un file **notifiche.csv** così formato:
 
 1. **id**: [_int_] Identificativo univoco
 2. **timestamp**: [_datetime_] istante di riferimento dell’evento
