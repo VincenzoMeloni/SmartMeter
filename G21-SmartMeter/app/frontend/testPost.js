@@ -14,7 +14,7 @@ function shakeInput(input) {
 
 postBtn.addEventListener('click', async () => {
   const contVal = parseFloat(cont.value);
-  const potVal = parseFloat(pot.value);
+  let potVal = parseFloat(pot.value);
 
   let hasError = false;
 
